@@ -2,27 +2,53 @@ package converter;
 
 import java.util.Scanner;
 
+import static java.lang.String.format;
+
 public class Main {
+    private static final Scanner sc = new Scanner(System.in);
+
     public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        int radixOfNum = sc.nextInt();
-        String numInString = sc.next();
-        int radixTarget = sc.nextInt();
+        final var sourceRadix = readRadix();
+        final var sourceNumber = readNumber(sourceRadix);
+        final var targetRadix = readRadix();
+        sc.close();
 
-        long num;
-        if (radixOfNum == 1) {
-            num = numInString.length();
-        } else {
-            num = Long.parseLong(numInString, radixOfNum);
-        }
+        System.out.println(
+                new MyNumber(sourceNumber, sourceRadix)
+                        .toString(targetRadix));
+    }
 
-        if (radixTarget == 1) {
-            for (int i = 0; i < num; i++) {
-                System.out.print(1);
+    static int readRadix() {
+        final var radix = sc.nextLine();
+        //if (radix.matches("\\d(1,2)")) {
+            int i = Integer.parseInt(radix);
+            if (i > 0 && i < 37) {
+                return i;
             }
-        } else {
-            String numTarget = Long.toString(num, radixTarget);
-            System.out.print(numTarget);
+        //}
+        System.out.println("Error: Radix has to be number from 1 to 35!");
+        System.exit(1);
+        return 0;
+    }
+
+    static String readNumber(int radix) {
+        final var number = sc.nextLine();
+        if (!number.matches(getRegexp(radix))) {
+            System.out.println("Error: Incorrect format for source number!");
+            System.exit(1);
         }
+        return number;
+    }
+
+    static String getRegexp(int radix) {
+        final String range;
+        if (radix == 1) {
+            range = "1";
+        } else if (radix <= 10) {
+            range = format("[0-%d]", radix - 1);
+        } else {
+            range = format("[0-9a-%c]", radix - 11 + 'a');
+        }
+        return format("%1$s+(\\.%1$s+)?", range);
     }
 }
