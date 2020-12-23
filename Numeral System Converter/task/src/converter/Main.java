@@ -20,12 +20,12 @@ public class Main {
 
     static int readRadix() {
         final var radix = sc.nextLine();
-        //if (radix.matches("\\d(1,2)")) {
+        if (radix.matches("\\d{1,2}")) {
             int i = Integer.parseInt(radix);
             if (i > 0 && i < 37) {
                 return i;
             }
-        //}
+        }
         System.out.println("Error: Radix has to be number from 1 to 35!");
         System.exit(1);
         return 0;
